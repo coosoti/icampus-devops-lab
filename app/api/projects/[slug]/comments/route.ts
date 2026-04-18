@@ -6,10 +6,11 @@ export const dynamic = "force-dynamic";
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const project = await getProjectBySlug(params.slug);
+    const { slug } = await params;
+    const project = await getProjectBySlug(slug);
     if (!project) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
@@ -22,10 +23,11 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const project = await getProjectBySlug(params.slug);
+    const { slug } = await params;
+    const project = await getProjectBySlug(slug);
     if (!project) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
@@ -56,7 +58,7 @@ export async function POST(
 
     return NextResponse.json({ comment }, { status: 201 });
   } catch (error) {
-    console.error(`[POST /api/projects/${params.slug}/comments]`, error);
+    console.error("[POST /api/projects/[slug]/comments]", error);
     return NextResponse.json({ error: "Failed to post comment" }, { status: 500 });
   }
 }

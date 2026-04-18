@@ -1,94 +1,65 @@
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import Image from "next/image";
-import Link from "next/link";
-import { getProjectBySlug } from "@/lib/queries/projects";
-import Hero from "@/components/case-study/Hero";
-import Gallery from "@/components/case-study/Gallery";
-import SystemBreakdown from "@/components/case-study/SystemBreakdown";
-import FailureScenarios from "@/components/case-study/FailureScenarios";
-import LikeButton from "@/components/case-study/LikeButton";
-import Comments from "@/components/case-study/Comments";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
-interface PageProps {
-  params: { slug: string };
-}
+export default async function AdminLoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ from?: string; error?: string }>;
+}) {
+  const { from, error } = await searchParams;
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const project = await getProjectBySlug(params.slug);
-  if (!project) return {};
-  return {
-    title: project.title,
-    description: project.description,
-    openGraph: {
-      title: project.title,
-      description: project.description,
-      images: project.coverImage ? [project.coverImage] : [],
-    },
-  };
-}
+  async function login(formData: FormData) {
+    "use server";
+    const password = formData.get("password") as string;
 
-export default async function CaseStudyPage({ params }: PageProps) {
-  const project = await getProjectBySlug(params.slug);
-  if (!project) notFound();
+    if (password === process.env.ADMIN_PASSWORD) {
+      const cookieStore = await cookies();
+      cookieStore.set("admin_auth", password, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 60 * 60 * 24 * 7,
+        path: "/",
+      });
+      redirect(from ?? "/admin");
+    } else {
+      redirect("/admin/login?error=1");
+    }
+  }
 
   return (
-    <div style={{ maxWidth: 900, margin: "0 auto", padding: "2.5rem 1.5rem 5rem" }}>
-      {/* 1. Hero */}
-      <Hero project={project} />
-
-      {/* 2. Architecture diagram */}
-      {project.coverImage && (
-        <section style={{ marginBottom: "3rem" }}>
-          <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "1.2rem", color: "var(--text-primary)", marginBottom: "1rem", letterSpacing: "-0.01em" }}>
-            Architecture diagram
-          </h2>
-          <div style={{ position: "relative", width: "100%", aspectRatio: "16/9", borderRadius: 12, overflow: "hidden", border: "1px solid var(--border)", background: "var(--bg-secondary)" }}>
-            <Image
-              src={project.coverImage}
-              alt={`${project.title} architecture`}
-              fill
-              sizes="(max-width: 1024px) 100vw, 900px"
-              style={{ objectFit: "cover" }}
-              priority
-            />
+    <div style={{ minHeight: "calc(100vh - 62px)", display: "flex", alignItems: "center", justifyContent: "center", padding: "2rem" }}>
+      <div style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 14, padding: "2rem", width: "100%", maxWidth: 380 }}>
+        <div style={{ marginBottom: "1.5rem" }}>
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <rect width="28" height="28" rx="7" fill="#3b82f6" opacity="0.12"/>
+            <path d="M6 14L12 8L18 14L12 20L6 14Z" fill="#3b82f6"/>
+            <path d="M14 14L20 8L26 14L20 20L14 14Z" fill="#f97316" opacity="0.85"/>
+          </svg>
+        </div>
+        <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "1.4rem", color: "var(--text-primary)", marginBottom: "0.4rem", letterSpacing: "-0.02em" }}>
+          Admin access
+        </h1>
+        <p style={{ fontFamily: "var(--font-body)", fontSize: "0.85rem", color: "var(--text-muted)", marginBottom: "1.75rem" }}>
+          Enter your admin password to continue.
+        </p>
+        {error && (
+          <div style={{ fontFamily: "var(--font-body)", fontSize: "0.8rem", color: "#f87171", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.25)", borderRadius: 6, padding: "0.5rem 0.75rem", marginBottom: "1rem" }}>
+            Incorrect password. Try again.
           </div>
-        </section>
-      )}
-
-      {/* 3. Gallery */}
-      <Gallery images={project.gallery} projectTitle={project.title} />
-
-      {/* 4. System breakdown */}
-      <SystemBreakdown
-        overview={project.overview}
-        architecture={project.architecture}
-        ciCd={project.ciCd}
-        observability={project.observability}
-      />
-
-      {/* 5. Failure scenarios */}
-      <FailureScenarios scenarios={project.failureScenarios} />
-
-      {/* 6. Like + links */}
-      <div style={{ borderTop: "1px solid var(--border)", paddingTop: "2rem", marginBottom: "3rem", display: "flex", flexWrap: "wrap", gap: "0.75rem", alignItems: "center" }}>
-        <LikeButton slug={project.slug} initialCount={project.likeCount} />
-        <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="btn-cta">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg>
-          GitHub
-        </a>
-        {project.demoUrl && (
-          <a href={project.demoUrl} target="_blank" rel="noopener noreferrer" className="btn-outline">Live demo →</a>
         )}
-        <Link href="/projects" style={{ marginLeft: "auto", fontFamily: "var(--font-mono)", fontSize: "0.72rem", color: "var(--text-muted)", textDecoration: "none" }}>
-          ← All projects
-        </Link>
+        <form action={login} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
+            <label className="label" htmlFor="password">Password</label>
+            <input id="password" name="password" type="password" required autoFocus placeholder="Enter admin password" className="input" />
+          </div>
+          <button type="submit" className="btn-cta" style={{ justifyContent: "center" }}>
+            Sign in
+          </button>
+        </form>
       </div>
-
-      {/* 7. Comments */}
-      <Comments slug={project.slug} />
     </div>
   );
 }

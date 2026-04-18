@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import MobileNav from "@/components/ui/MobileNav";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -13,6 +12,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
+        {/* ── Nav ── */}
         <header style={{
           position: "sticky", top: 0, zIndex: 50,
           borderBottom: "1px solid var(--border)",
@@ -36,8 +36,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </span>
             </Link>
 
-            {/* Desktop nav links — hidden on mobile */}
-            <div className="nav-links desktop-nav">
+            {/* Nav links */}
+            <div className="nav-links">
               <Link href="/projects" style={{ fontFamily: "var(--font-body)", fontSize: "0.875rem", color: "var(--text-secondary)", textDecoration: "none" }}>
                 Projects
               </Link>
@@ -56,14 +56,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <span>GitHub ↗</span>
               </a>
             </div>
-
-            {/* Mobile hamburger — hidden on desktop */}
-            <MobileNav />
           </nav>
         </header>
 
         <main style={{ minHeight: "calc(100vh - 62px)" }}>{children}</main>
 
+        {/* ── Footer ── */}
         <footer style={{ borderTop: "1px solid var(--border)", padding: "1.25rem 1.5rem" }}>
           <div style={{
             maxWidth: 1280, margin: "0 auto",

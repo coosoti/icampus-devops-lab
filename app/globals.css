@@ -25,7 +25,6 @@
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-
 html { scroll-behavior: smooth; }
 
 body {
@@ -38,7 +37,6 @@ body {
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: var(--bg-primary); }
 ::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 3px; }
-
 ::selection { background: var(--accent-blue); color: white; }
 
 /* ── Dot grid ── */
@@ -73,6 +71,7 @@ body {
   gap: 0.4rem;
   text-decoration: none;
   font-size: 0.875rem;
+  white-space: nowrap;
 }
 .btn-cta:hover { background: var(--accent-blue-bright); transform: translateY(-1px); }
 
@@ -91,6 +90,7 @@ body {
   align-items: center;
   gap: 0.4rem;
   text-decoration: none;
+  white-space: nowrap;
 }
 .btn-outline:hover {
   border-color: var(--accent-blue);
@@ -113,6 +113,7 @@ body {
   align-items: center;
   gap: 0.4rem;
   text-decoration: none;
+  white-space: nowrap;
 }
 .btn-ghost:hover {
   border-color: var(--border-hover);
@@ -135,7 +136,6 @@ body {
 }
 .input:focus { border-color: var(--accent-blue); }
 .input::placeholder { color: var(--text-muted); }
-
 textarea.input { resize: vertical; min-height: 100px; }
 
 /* ── Labels ── */
@@ -208,9 +208,6 @@ textarea.input { resize: vertical; min-height: 100px; }
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
 }
-@media (max-width: 640px) {
-  .form-grid { grid-template-columns: 1fr; }
-}
 .form-field { display: flex; flex-direction: column; gap: 0.35rem; }
 .form-field.full { grid-column: 1 / -1; }
 
@@ -229,3 +226,115 @@ textarea.input { resize: vertical; min-height: 100px; }
   transition: opacity 0.15s;
 }
 .tag-pill:hover { opacity: 0.8; }
+
+/* ── Hero layout ── */
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: center;
+  min-height: 440px;
+}
+
+.hero-graphic {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  min-height: 380px;
+}
+
+/* ── Nav ── */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.nav-github {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1.5px solid var(--border-hover);
+  border-radius: 999px;
+  padding: 0.38rem 1rem;
+  font-size: 0.78rem;
+  font-family: var(--font-body);
+  font-weight: 500;
+  color: var(--text-primary);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: border-color 0.2s, color 0.2s;
+}
+.nav-github:hover {
+  border-color: var(--accent-blue);
+  color: var(--accent-blue-bright);
+}
+
+/* ── Responsive ── */
+
+/* Tablet — 768px and below */
+@media (max-width: 768px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    padding: 2.5rem 0;
+  }
+
+  .hero-graphic {
+    display: none; /* Hide decorative terminal on mobile */
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .nav-github span {
+    display: none; /* Hide "GitHub ↗" text, keep icon */
+  }
+}
+
+/* Mobile — 480px and below */
+@media (max-width: 480px) {
+  .form-section {
+    padding: 1rem;
+  }
+
+  .btn-cta,
+  .btn-outline,
+  .btn-ghost {
+    font-size: 0.82rem;
+    padding: 0.6rem 1.2rem;
+  }
+
+  /* Stack hero CTA buttons vertically */
+  .hero-ctas {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* Large screens — keep content centered */
+@media (min-width: 1280px) {
+  .hero-grid {
+    min-height: 480px;
+  }
+}
+
+/* Large screens — keep content centered */
+@media (min-width: 1280px) {
+    .hero-grid {
+      min-height: 480px;
+    }
+  }
+   
+  /* ── Mobile nav toggle ── */
+  .desktop-nav { display: flex; }
+  .hamburger-btn { display: none; }
+   
+  @media (max-width: 768px) {
+    .desktop-nav { display: none !important; }
+    .hamburger-btn { display: inline-flex !important; }
+  }
+   

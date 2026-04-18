@@ -6,10 +6,11 @@ export const dynamic = "force-dynamic";
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const project = await getProjectBySlug(params.slug);
+    const { slug } = await params;
+    const project = await getProjectBySlug(slug);
     if (!project) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
@@ -22,20 +23,20 @@ export async function POST(
     const fingerprint = buildFingerprint(ip, ua);
 
     const result = await toggleLike(project.id, fingerprint);
-
     return NextResponse.json(result);
   } catch (error) {
-    console.error(`[POST /api/projects/${params.slug}/like]`, error);
+    console.error("[POST /api/projects/[slug]/like]", error);
     return NextResponse.json({ error: "Failed to toggle like" }, { status: 500 });
   }
 }
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const project = await getProjectBySlug(params.slug);
+    const { slug } = await params;
+    const project = await getProjectBySlug(slug);
     if (!project) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
@@ -47,7 +48,6 @@ export async function GET(
     const fingerprint = buildFingerprint(ip, ua);
 
     const liked = await hasLiked(project.id, fingerprint);
-
     return NextResponse.json({ liked, likeCount: project.likeCount });
   } catch (error) {
     return NextResponse.json({ error: "Failed to get like status" }, { status: 500 });
