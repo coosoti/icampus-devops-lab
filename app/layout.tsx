@@ -13,41 +13,50 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
+        {/* ── Nav — light grey ── */}
         <header style={{
           position: "sticky", top: 0, zIndex: 50,
-          borderBottom: "1px solid var(--border)",
-          background: "rgba(26,26,31,0.94)",
-          backdropFilter: "blur(14px)",
+          borderBottom: "1px solid var(--border-grey)",
+          background: "rgba(242,242,240,0.95)",
+          backdropFilter: "blur(12px)",
         }}>
           <nav style={{
             maxWidth: 1280, margin: "0 auto",
-            padding: "0 1.5rem", height: 62,
+            padding: "0 1.5rem", height: 64,
             display: "flex", alignItems: "center", justifyContent: "space-between",
           }}>
             {/* Logo */}
-            <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: "0.6rem", flexShrink: 0 }}>
-              <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                <rect width="28" height="28" rx="7" fill="#3b82f6" opacity="0.12"/>
-                <path d="M6 14L12 8L18 14L12 20L6 14Z" fill="#3b82f6"/>
-                <path d="M14 14L20 8L26 14L20 20L14 14Z" fill="#f97316" opacity="0.85"/>
+            <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: "0.5rem", flexShrink: 0 }}>
+              <svg width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+                <rect width="26" height="26" rx="7" fill="#16a34a" opacity="0.12"/>
+                <path d="M5 13L10 8L15 13L10 18L5 13Z" fill="#16a34a"/>
+                <path d="M13 13L18 8L23 13L18 18L13 13Z" fill="#ea580c" opacity="0.85"/>
               </svg>
-              <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "0.95rem", color: "var(--text-primary)", letterSpacing: "-0.01em" }}>
-                iCampus<span style={{ color: "var(--accent-blue)" }}>DevOps</span>
+              <span style={{
+                fontFamily: "var(--font-display)", fontWeight: 800,
+                fontSize: "0.95rem", color: "var(--text-primary)", letterSpacing: "-0.02em",
+              }}>
+                iCampus<span style={{ color: "var(--accent-green)" }}>DevOps</span>
               </span>
             </Link>
 
-            {/* Desktop nav links — hidden on mobile */}
+            {/* Desktop nav */}
             <div className="nav-links desktop-nav">
-              <Link href="/projects" style={{ fontFamily: "var(--font-body)", fontSize: "0.875rem", color: "var(--text-secondary)", textDecoration: "none" }}>
+              <Link href="/projects" style={{
+                fontFamily: "var(--font-body)", fontSize: "0.85rem",
+                color: "var(--text-secondary)", textDecoration: "none", fontWeight: 500,
+              }}>
                 Projects
               </Link>
-              <Link href="/admin" style={{ fontFamily: "var(--font-body)", fontSize: "0.875rem", color: "var(--text-secondary)", textDecoration: "none" }}>
+              <Link href="/admin" style={{
+                fontFamily: "var(--font-body)", fontSize: "0.85rem",
+                color: "var(--text-secondary)", textDecoration: "none", fontWeight: 500,
+              }}>
                 Admin
               </Link>
               <a
                 href="https://github.com/coosoti/icampus-devops-lab"
-                target="_blank"
-                rel="noopener noreferrer"
+                target="_blank" rel="noopener noreferrer"
                 className="nav-github"
               >
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -57,20 +66,24 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </a>
             </div>
 
-            {/* Mobile hamburger — hidden on desktop */}
             <MobileNav />
           </nav>
         </header>
 
-        <main style={{ minHeight: "calc(100vh - 62px)" }}>{children}</main>
+        <main style={{ minHeight: "calc(100vh - 58px)" }}>{children}</main>
 
-        <footer style={{ borderTop: "1px solid var(--border)", padding: "1.25rem 1.5rem" }}>
+        {/* ── Footer — light green ── */}
+        <footer style={{
+          borderTop: "1px solid var(--border)",
+          background: "var(--card-bg-alt)",
+          padding: "1.25rem 1.5rem",
+        }}>
           <div style={{
             maxWidth: 1280, margin: "0 auto",
             display: "flex", alignItems: "center", justifyContent: "space-between",
             flexWrap: "wrap", gap: "1rem",
           }}>
-            <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.72rem", color: "var(--text-muted)" }}>
+            <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.7rem", color: "var(--text-muted)" }}>
               © {new Date().getFullYear()} iCampus DevOps Lab · All Rights Reserved
             </span>
             <div style={{ display: "flex", gap: "1.5rem", flexWrap: "wrap" }}>
@@ -79,7 +92,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 { label: "Admin", href: "/admin" },
                 { label: "GitHub", href: "https://github.com/coosoti/icampus-devops-lab" },
               ].map(({ label, href }) => (
-                <a key={label} href={href} style={{ fontFamily: "var(--font-mono)", fontSize: "0.72rem", color: "var(--text-muted)", textDecoration: "none" }}>
+                <a key={label} href={href} style={{
+                  fontFamily: "var(--font-mono)", fontSize: "0.7rem",
+                  color: "var(--text-muted)", textDecoration: "none",
+                }}>
                   {label}
                 </a>
               ))}
