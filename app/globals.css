@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,19 +6,24 @@
 
 :root {
   /* ── Zone colors ── */
-  --nav-bg: #f2f2f0;           /* light grey — nav + hero */
-  --hero-bg: #f2f2f0;          /* same light grey */
-  --content-bg: #f0f7f2;       /* very light green — all content below hero */
-  --card-bg: #ffffff;          /* white cards on green background */
-  --card-bg-alt: #e8f5ec;      /* slightly deeper green for secondary surfaces */
+  --nav-bg: #f2f2f0;
+  --hero-bg: #0a1628;          /* deep navy-dark — pairs beautifully with cyan */
+  --content-bg: #f0f7fa;       /* very light cyan tint — content below hero */
+  --card-bg: #ffffff;
+  --card-bg-alt: #e6f4f8;      /* light cyan tint for secondary surfaces */
 
-  /* ── Accents ── */
-  --accent-blue: #2563eb;
-  --accent-blue-bright: #3b82f6;
-  --accent-orange: #ea580c;
-  --accent-orange-bright: #f97316;
-  --accent-green: #16a34a;
-  --accent-green-bright: #22c55e;
+  /* ── Accents — Cyan palette ── */
+  --accent-cyan: #06b6d4;
+  --accent-cyan-bright: #22d3ee;
+  --accent-cyan-dim: #0891b2;
+  --accent-blue: #3b82f6;
+  --accent-blue-bright: #60a5fa;
+  --accent-orange: #f97316;
+  --accent-orange-bright: #fb923c;
+
+  /* ── Legacy green aliases (keeps existing components working) ── */
+  --accent-green: #06b6d4;
+  --accent-green-bright: #22d3ee;
 
   /* ── Text ── */
   --text-primary: #0f0f0f;
@@ -26,12 +31,12 @@
   --text-muted: #9ca3af;
 
   /* ── Borders ── */
-  --border: #e2e8e2;           /* slight green tint on borders */
-  --border-hover: #c8d8c8;
-  --border-grey: #e2e2de;      /* grey-tinted border for nav/hero zone */
+  --border: #daedf2;           /* cyan-tinted border */
+  --border-hover: #b0d8e4;
+  --border-grey: #e2e2de;
 
   /* ── Fonts ── */
-  --font-display: 'Syne', sans-serif;
+  --font-display: 'Plus Jakarta Sans', sans-serif;
   --font-body: 'IBM Plex Sans', sans-serif;
   --font-mono: 'IBM Plex Mono', monospace;
 }
@@ -49,11 +54,11 @@ body {
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: var(--content-bg); }
 ::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 3px; }
-::selection { background: var(--accent-green); color: white; }
+::selection { background: var(--accent-cyan); color: white; }
 
-/* ── Dot grid (hero zone — grey tint) ── */
+/* ── Dot grid ── */
 .dot-grid {
-  background-image: radial-gradient(circle, #16a34a1a 1px, transparent 1px);
+  background-image: radial-gradient(circle, #06b6d415 1px, transparent 1px);
   background-size: 26px 26px;
 }
 
@@ -63,16 +68,16 @@ body {
 }
 .card-lift:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 28px rgba(22,163,74,0.1);
+  box-shadow: 0 8px 28px rgba(6, 182, 212, 0.12);
   border-color: var(--border-hover);
 }
 
 /* ── Buttons ── */
 .btn-cta {
-  background: var(--accent-green);
-  color: white;
+  background: var(--accent-cyan);
+  color: #0a1628;              /* dark text on cyan — better contrast */
   font-family: var(--font-body);
-  font-weight: 600;
+  font-weight: 700;
   border: none;
   border-radius: 999px;
   padding: 0.65rem 1.6rem;
@@ -85,7 +90,7 @@ body {
   font-size: 0.875rem;
   white-space: nowrap;
 }
-.btn-cta:hover { background: var(--accent-green-bright); transform: translateY(-1px); }
+.btn-cta:hover { background: var(--accent-cyan-bright); transform: translateY(-1px); }
 
 .btn-outline {
   border: 1.5px solid var(--border-hover);
@@ -104,12 +109,13 @@ body {
   text-decoration: none;
   white-space: nowrap;
 }
-.btn-outline:hover { border-color: var(--accent-green); color: var(--accent-green); }
+.btn-outline:hover { border-color: var(--accent-cyan); color: var(--accent-cyan); }
 
+/* Hero ghost button — dark bg context */
 .btn-ghost {
-  background: var(--card-bg);
-  border: 1.5px solid var(--border-grey);
-  color: var(--text-secondary);
+  background: transparent;
+  border: 1.5px solid #1e3a5f;
+  color: #94a3b8;
   font-family: var(--font-body);
   font-weight: 500;
   border-radius: 8px;
@@ -123,11 +129,11 @@ body {
   text-decoration: none;
   white-space: nowrap;
 }
-.btn-ghost:hover { border-color: var(--accent-green); color: var(--accent-green); }
+.btn-ghost:hover { border-color: var(--accent-cyan); color: var(--accent-cyan); }
 
 /* ── Inputs ── */
 .input {
-  background: #f7fbf8;
+  background: #f0f9fb;
   border: 1.5px solid var(--border);
   border-radius: 8px;
   color: var(--text-primary);
@@ -138,7 +144,7 @@ body {
   width: 100%;
   outline: none;
 }
-.input:focus { border-color: var(--accent-green); }
+.input:focus { border-color: var(--accent-cyan); }
 .input::placeholder { color: var(--text-muted); }
 textarea.input { resize: vertical; min-height: 100px; }
 
@@ -161,15 +167,15 @@ textarea.input { resize: vertical; min-height: 100px; }
   font-weight: 500;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--accent-green);
+  color: var(--accent-cyan);
 }
 
 /* ── Display heading ── */
 .display-heading {
   font-family: var(--font-display);
   font-weight: 800;
-  line-height: 1.02;
-  letter-spacing: -0.03em;
+  line-height: 1.08;
+  letter-spacing: -0.01em;
 }
 
 /* ── Search input ── */
@@ -185,7 +191,7 @@ textarea.input { resize: vertical; min-height: 100px; }
   width: 100%;
   outline: none;
 }
-.search-input:focus { border-color: var(--accent-green); }
+.search-input:focus { border-color: var(--accent-cyan); }
 .search-input::placeholder { color: var(--text-muted); }
 
 /* ── Admin form ── */
@@ -202,7 +208,7 @@ textarea.input { resize: vertical; min-height: 100px; }
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: var(--accent-green);
+  color: var(--accent-cyan);
   margin-bottom: 1rem;
   padding-bottom: 0.6rem;
   border-bottom: 1px solid var(--border);
@@ -231,24 +237,55 @@ textarea.input { resize: vertical; min-height: 100px; }
 }
 .tag-pill:hover { opacity: 0.75; }
 
-/* ── Hero layout ── */
-.hero-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  align-items: center;
-  min-height: 420px;
-}
-.hero-graphic {
-  display: flex;
+/* ────────────────────────────────────────────────
+   HERO LAYOUT
+──────────────────────────────────────────────── */
+.hero-layout {
   position: relative;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  min-height: 340px;
+  display: grid;
+  grid-template-columns: 48% 52%;
+  min-height: 360px;
 }
 
-/* ── Toolbar (sits between hero and grid — white on green) ── */
+/* Left column — normal flow, sets section height */
+.hero-text {
+  padding: 3.5rem 2rem 3.5rem 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+}
+
+/* Right column — absolutely fills the right 52% */
+.hero-image-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 52%;
+  bottom: 0;
+  display: block;
+  z-index: 1;
+}
+
+.hero-image-panel img {
+  object-fit: contain !important;
+  object-position: center right !important;
+}
+
+/* Left-edge gradient fades image into dark hero bg */
+.hero-image-fade {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 160px;
+  background: linear-gradient(to right, var(--hero-bg) 20%, transparent 100%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* ── Toolbar ── */
 .toolbar {
   background: var(--card-bg);
   border-top: 1px solid var(--border-grey);
@@ -274,14 +311,22 @@ textarea.input { resize: vertical; min-height: 100px; }
   background: var(--card-bg);
   transition: border-color 0.2s, color 0.2s;
 }
-.nav-github:hover { border-color: var(--accent-green); color: var(--accent-green); }
+.nav-github:hover { border-color: var(--accent-cyan); color: var(--accent-cyan); }
 
-/* ── Responsive ──
+/* ── Responsive ── */
 @media (max-width: 768px) {
-  .hero-grid { grid-template-columns: 1fr; min-height: auto; padding: 2.5rem 0; }
-  .hero-graphic { display: none; }
+  .hero-layout {
+    grid-template-columns: 1fr;
+  }
+  .hero-text {
+    padding: 3rem 0;
+  }
+  .hero-image-panel {
+    display: none;
+  }
   .form-grid { grid-template-columns: 1fr; }
 }
+
 @media (max-width: 480px) {
   .form-section { padding: 1rem; }
   .btn-cta, .btn-outline, .btn-ghost { font-size: 0.82rem; padding: 0.58rem 1.1rem; }
@@ -289,34 +334,11 @@ textarea.input { resize: vertical; min-height: 100px; }
 }
 
 /* ── Mobile nav ── */
-/* .desktop-nav { display: flex; }
+.mobile-nav { display: none; }
 .hamburger-btn { display: none; }
-@media (max-width: 768px) {
-  .desktop-nav { display: none !important; }
-  .hamburger-btn { display: inline-flex !important; }
-} */ 
- /* Mobile Navigation Visibility */
-.mobile-nav {
-  display: none;
-}
 
 @media (max-width: 768px) {
-  .mobile-nav {
-    display: block;
-  }
-  
-  .desktop-nav {
-    display: none;
-  }
-}
-
-/* Ensure hamburger button is visible */
-.hamburger-btn {
-  display: none;
-}
-
-@media (max-width: 768px) {
-  .hamburger-btn {
-    display: flex;
-  }
+  .mobile-nav { display: block; }
+  .desktop-nav { display: none; }
+  .hamburger-btn { display: flex; }
 }

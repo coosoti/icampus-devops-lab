@@ -3,17 +3,120 @@ import Link from "next/link";
 import MobileNav from "@/components/ui/MobileNav";
 import "./globals.css";
 
+const SITE_URL = "https://YOUR_DOMAIN_HERE.com"; // ← replace with your production URL
+const SITE_NAME = "iCampus DevOps Lab";
+const SITE_DESCRIPTION =
+  "Production-style DevOps and SRE case studies — CI/CD pipelines, cloud infrastructure, observability, and reliability engineering by real engineers.";
+
 export const metadata: Metadata = {
-  title: { default: "iCampus DevOps Lab", template: "%s · iCampus DevOps Lab" },
-  description: "Production-style DevOps and SRE case studies — CI/CD, cloud infrastructure, observability, and reliability engineering.",
-  openGraph: { type: "website", siteName: "iCampus DevOps Lab" },
+  /* ── Core ── */
+  title: {
+    default: SITE_NAME,
+    template: `%s · ${SITE_NAME}`,
+  },
+  description: SITE_DESCRIPTION,
+  keywords: [
+    "DevOps",
+    "SRE",
+    "CI/CD",
+    "Kubernetes",
+    "Terraform",
+    "AWS",
+    "cloud infrastructure",
+    "observability",
+    "reliability engineering",
+    "DevOps portfolio",
+    "SRE case studies",
+  ],
+
+  /* ── Canonical & robots ── */
+  metadataBase: new URL(SITE_URL),
+  alternates: { canonical: "/" },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-snippet": -1,
+      "max-image-preview": "large",
+      "max-video-preview": -1,
+    },
+  },
+
+  /* ── Open Graph ── */
+  openGraph: {
+    type: "website",
+    url: SITE_URL,
+    siteName: SITE_NAME,
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
+    images: [
+      {
+        url: "/og-image.png", // create a 1200×630 PNG and place in /public
+        width: 1200,
+        height: 630,
+        alt: "iCampus DevOps Lab — Production DevOps & SRE Case Studies",
+      },
+    ],
+    locale: "en_US",
+  },
+
+  /* ── Twitter / X ── */
+  twitter: {
+    card: "summary_large_image",
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
+    images: ["/og-image.png"],
+    // creator: "@yourhandle", // ← uncomment and add your Twitter handle
+  },
+
+  /* ── Icons ── */
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    // apple: "/apple-touch-icon.png", // ← add a 180×180 PNG to /public
+  },
+
+  /* ── Verification (add when you connect Search Console) ── */
+  // verification: {
+  //   google: "YOUR_GOOGLE_VERIFICATION_CODE",
+  // },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: SITE_NAME,
+    url: SITE_URL,
+    description: SITE_DESCRIPTION,
+    publisher: {
+      "@type": "Organization",
+      name: SITE_NAME,
+      url: SITE_URL,
+    },
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${SITE_URL}/projects?q={search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
+    },
+  };
+
   return (
     <html lang="en">
+      <head>
+        {/* JSON-LD structured data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body>
-        {/* ── Nav — light grey ── */}
+        {/* ── Nav ── */}
         <header style={{
           position: "sticky", top: 0, zIndex: 50,
           borderBottom: "1px solid var(--border-grey)",
@@ -28,15 +131,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             {/* Logo */}
             <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: "0.5rem", flexShrink: 0 }}>
               <svg width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden="true">
-                <rect width="26" height="26" rx="7" fill="#16a34a" opacity="0.12"/>
-                <path d="M5 13L10 8L15 13L10 18L5 13Z" fill="#16a34a"/>
-                <path d="M13 13L18 8L23 13L18 18L13 13Z" fill="#ea580c" opacity="0.85"/>
+                <rect width="26" height="26" rx="7" fill="#06b6d4" opacity="0.12"/>
+                <path d="M5 13L10 8L15 13L10 18L5 13Z" fill="#06b6d4"/>
+                <path d="M13 13L18 8L23 13L18 18L13 13Z" fill="#0891b2" opacity="0.85"/>
               </svg>
               <span style={{
                 fontFamily: "var(--font-display)", fontWeight: 800,
                 fontSize: "0.95rem", color: "var(--text-primary)", letterSpacing: "-0.02em",
               }}>
-                iCampus<span style={{ color: "var(--accent-green)" }}>DevOps</span>
+                iCampus<span style={{ color: "var(--accent-cyan)" }}>DevOps</span>
               </span>
             </Link>
 
@@ -56,7 +159,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </Link>
               <a
                 href="https://github.com/coosoti/icampus-devops-lab"
-                target="_blank" rel="noopener noreferrer"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="nav-github"
               >
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -72,7 +176,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         <main style={{ minHeight: "calc(100vh - 58px)" }}>{children}</main>
 
-        {/* ── Footer — light green ── */}
+        {/* ── Footer ── */}
         <footer style={{
           borderTop: "1px solid var(--border)",
           background: "var(--card-bg-alt)",
