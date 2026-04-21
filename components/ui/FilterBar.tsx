@@ -12,11 +12,10 @@ interface FilterBarProps {
 export default function FilterBar({ tags, activeTag, onChange }: FilterBarProps) {
   return (
     <div
-      style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0.5rem" }}
       role="group"
       aria-label="Filter projects by tag"
+      style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0.5rem" }}
     >
-      {/* All button */}
       <button
         type="button"
         onClick={() => onChange(null)}
@@ -29,7 +28,7 @@ export default function FilterBar({ tags, activeTag, onChange }: FilterBarProps)
           borderRadius: 999,
           border: `1.5px solid ${activeTag === null ? "var(--text-primary)" : "var(--border-hover)"}`,
           background: activeTag === null ? "var(--text-primary)" : "transparent",
-          color: activeTag === null ? "var(--bg-primary)" : "var(--text-secondary)",
+          color: activeTag === null ? "var(--card-bg)" : "var(--text-secondary)", /* was var(--bg-primary) — didn't exist */
           cursor: "pointer",
           transition: "all 0.15s",
         }}

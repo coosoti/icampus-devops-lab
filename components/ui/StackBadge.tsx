@@ -7,13 +7,8 @@ interface StackBadgeProps {
   active?: boolean;
 }
 
-export default function StackBadge({
-  tag,
-  size = "sm",
-  onClick,
-  active = false,
-}: StackBadgeProps) {
-  const color = tag.color ?? "#3b82f6";
+export default function StackBadge({ tag, size = "sm", onClick, active = false }: StackBadgeProps) {
+  const color = tag.color ?? "#06b6d4"; /* was #3b82f6 blue — updated to cyan */
 
   const style: React.CSSProperties = {
     color: active ? "#fff" : color,
