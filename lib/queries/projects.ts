@@ -1,37 +1,31 @@
 import { db } from "@/lib/db";
-import { projects, projectTags, tags, galleryImages, comments, likes } from "@/lib/schema";
+import {
+  projects,
+  projectTags,
+  tags,
+  galleryImages,
+  comments,
+  likes,
+} from "@/lib/schema";
 import { eq, desc, sql, inArray } from "drizzle-orm";
 import type { ProjectWithRelations } from "@/types/project";
 
-// ── Helpers ────────────────────────────────────────────────────────────────────
-
-function serialize(row: typeof projects.$inferSelect): typeof row {
-  return {
-    ...row,
-    createdAt: new Date(row.createdAt),
-    updatedAt: new Date(row.updatedAt),
-  };
-}
-
-// ── Read ───────────────────────────────────────────────────────────────────────
+// ── Read ───────────────────────────────────────────────────────────────────
 
 export async function getAllProjects() {
   const rows = await db
     .select()
     .from(projects)
     .orderBy(desc(projects.createdAt));
-
-  return rows.map(serialize);
+  return rows;
 }
 
 export async function getFeaturedProjects() {
-  const rows = await db
+  return db
     .select()
     .from(projects)
     .where(eq(projects.featured, true))
     .orderBy(desc(projects.createdAt));
-
-  return rows.map(serialize);
 }
 
 export async function getProjectBySlug(
@@ -58,8 +52,8 @@ export async function getProjectBySlug(
     .then((r) => r[0]?.count ?? 0);
 
   return {
-    ...serialize(project),
-    tags: project.projectTags.map((pt) => pt.tag),
+    ...project,
+    tags: project.projectTags.map((pt: any) => pt.tag),
     gallery: project.gallery,
     commentCount,
   };
@@ -67,7 +61,9 @@ export async function getProjectBySlug(
 
 export async function getAllProjectSlugs(): Promise<string[]> {
   try {
-    const rows = await db.select({ slug: projects.slug }).from(projects);
+    const rows = await db
+      .select({ slug: projects.slug })
+      .from(projects);
     return rows.map((r) => r.slug);
   } catch {
     return [];
@@ -89,22 +85,20 @@ export async function getProjectsByTag(tagName: string) {
   if (projectIds.length === 0) return [];
 
   const ids = projectIds.map((r) => r.projectId);
-  const rows = await db
+  return db
     .select()
     .from(projects)
     .where(inArray(projects.id, ids))
     .orderBy(desc(projects.createdAt));
-
-  return rows.map(serialize);
 }
 
 export async function getAllTags() {
   return db.select().from(tags).orderBy(tags.name);
 }
 
-// ── Write (admin) ──────────────────────────────────────────────────────────────
+// ── Write ──────────────────────────────────────────────────────────────────
 
-export async function createProject(data: {
+interface ProjectData {
   title: string;
   slug: string;
   description: string;
@@ -120,15 +114,27 @@ export async function createProject(data: {
   featured: boolean;
   tagIds: string[];
   galleryUrls: { url: string; caption?: string }[];
-}) {
+}
+
+export async function createProject(data: ProjectData) {
   const { tagIds, galleryUrls, ...projectData } = data;
 
   const [project] = await db
     .insert(projects)
     .values({
-      ...projectData,
-      demoUrl: projectData.demoUrl || null,
-      coverImage: projectData.coverImage || null,
+      title: projectData.title,
+      slug: projectData.slug,
+      description: projectData.description,
+      coverImage: projectData.coverImage ?? null,
+      stack: projectData.stack,
+      overview: projectData.overview,
+      architecture: projectData.architecture,
+      ciCd: projectData.ciCd,
+      observability: projectData.observability,
+      failureScenarios: projectData.failureScenarios,
+      githubUrl: projectData.githubUrl,
+      demoUrl: projectData.demoUrl ?? null,
+      featured: projectData.featured,
     })
     .returning();
 
@@ -152,21 +158,35 @@ export async function createProject(data: {
   return project;
 }
 
-export async function updateProject(
-  id: string,
-  data: Partial<typeof projects.$inferInsert> & {
-    tagIds?: string[];
-    galleryUrls?: { url: string; caption?: string }[];
-  }
-) {
-  const { tagIds, galleryUrls, ...projectData } = data;
+export async function updateProject(id: string, data: Partial<ProjectData>) {
+  const { tagIds, galleryUrls, ...rest } = data;
+
+  // Build explicit update object so Drizzle maps camelCase → snake_case correctly
+  const updateValues: Record<string, any> = {
+    updatedAt: new Date(),
+  };
+
+  if (rest.title !== undefined) updateValues.title = rest.title;
+  if (rest.slug !== undefined) updateValues.slug = rest.slug;
+  if (rest.description !== undefined) updateValues.description = rest.description;
+  if (rest.coverImage !== undefined) updateValues.coverImage = rest.coverImage ?? null;
+  if (rest.stack !== undefined) updateValues.stack = rest.stack;
+  if (rest.overview !== undefined) updateValues.overview = rest.overview;
+  if (rest.architecture !== undefined) updateValues.architecture = rest.architecture;
+  if (rest.ciCd !== undefined) updateValues.ciCd = rest.ciCd;
+  if (rest.observability !== undefined) updateValues.observability = rest.observability;
+  if (rest.failureScenarios !== undefined) updateValues.failureScenarios = rest.failureScenarios;
+  if (rest.githubUrl !== undefined) updateValues.githubUrl = rest.githubUrl;
+  if (rest.demoUrl !== undefined) updateValues.demoUrl = rest.demoUrl ?? null;
+  if (rest.featured !== undefined) updateValues.featured = rest.featured;
 
   const [updated] = await db
     .update(projects)
-    .set({ ...projectData, updatedAt: new Date() })
+    .set(updateValues)
     .where(eq(projects.id, id))
     .returning();
 
+  // Replace tags if provided
   if (tagIds !== undefined) {
     await db.delete(projectTags).where(eq(projectTags.projectId, id));
     if (tagIds.length > 0) {
@@ -176,6 +196,7 @@ export async function updateProject(
     }
   }
 
+  // Replace gallery if provided
   if (galleryUrls !== undefined) {
     await db.delete(galleryImages).where(eq(galleryImages.projectId, id));
     if (galleryUrls.length > 0) {
